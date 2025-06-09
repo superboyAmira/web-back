@@ -22,14 +22,15 @@ func NewHandler(svc *service.TournamentService, logger *zap.Logger) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(r *mux.Router) {
-	r.HandleFunc("/tournaments", h.GetAll).Methods("GET")
-	r.HandleFunc("/tournaments", h.Create).Methods("POST")
-	r.HandleFunc("/tournaments/{id}", h.Delete).Methods("DELETE")
-	r.HandleFunc("/tournaments/{id}", h.Archive).Methods("PATCH")
+	r.HandleFunc("/api/tournaments", h.GetAll).Methods("GET")
+	r.HandleFunc("/api/tournaments", h.Create).Methods("POST")
+	r.HandleFunc("/api/tournaments/{id}", h.Delete).Methods("DELETE")
+	r.HandleFunc("/api/tournaments/{id}", h.Archive).Methods("PATCH")
 }
 
 func (h *Handler) GetAll(w http.ResponseWriter, _ *http.Request) {
 	list := h.svc.GetAll()
+	h.logger.Info("get", zap.Any("saved", list))
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(list)
 }
@@ -45,6 +46,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		t.Date = time.Now().UTC()
 	}
 	saved := h.svc.Create(t)
+	h.logger.Info("saved", zap.Any("saved", saved))
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(saved)
 }

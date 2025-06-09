@@ -15,7 +15,7 @@ services:
       context: https://github.com/superboyAmira/web-kursovaya-2025.git#main
       dockerfile: Dockerfile
     image: chess-tournament-ui:latest
-    command: ["npm","run","preview"]
+    # command: ["npm","run","preview"]
     ports:
       - "4173:4173"
     depends_on:

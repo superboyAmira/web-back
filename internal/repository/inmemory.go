@@ -3,6 +3,7 @@ package repo
 import (
 	"backend/internal/model"
 	"sync"
+	"time"
 )
 
 type Repository interface {
@@ -19,10 +20,34 @@ type InMemoryRepo struct {
 }
 
 func NewInMemoryRepo() *InMemoryRepo {
-	return &InMemoryRepo{
+	r := &InMemoryRepo{
 		tournaments: make(map[uint]model.Tournament),
 		nextID:      1,
 	}
+
+	r.Save(model.Tournament{
+		Title:     "Московский блиц-турнир",
+		Date:      time.Date(2025, 6, 25, 18, 0, 0, 0, time.UTC),
+		Location:  "Москва, Центральный шахматный клуб",
+		Organizer: "Федерация шахмат РФ",
+		Status:    model.Active,
+	})
+	r.Save(model.Tournament{
+		Title:     "Кубок чемпионов",
+		Date:      time.Date(2025, 8, 1, 15, 30, 0, 0, time.UTC),
+		Location:  "Санкт-Петербург, КСШ",
+		Organizer: "Союз шахмат России",
+		Status:    model.InProgress,
+	})
+	r.Save(model.Tournament{
+		Title:     "Летний шахматный опен",
+		Date:      time.Date(2025, 7, 10, 12, 0, 0, 0, time.UTC),
+		Location:  "Сочи, Олимпийская деревня",
+		Organizer: "Министерство спорта",
+		Status:    model.Archive,
+	})
+
+	return r
 }
 
 func (r *InMemoryRepo) GetAll() []model.Tournament {
