@@ -5,7 +5,7 @@ services:
     build:
       context: https://github.com/superboyAmira/web-back.git#main
       dockerfile: Dockerfile
-    image: your-org/tournament-backend:latest
+    image: tournament-backend:latest
     ports:
       - "8080:8080"
     restart: unless-stopped
@@ -14,9 +14,10 @@ services:
     build:
       context: https://github.com/superboyAmira/web-kursovaya-2025.git#main
       dockerfile: Dockerfile
-    image: your-org/chess-tournament-ui:latest
+    image: chess-tournament-ui:latest
+    command: ["npm","run","preview"]
     ports:
-      - "80:80"
+      - "4173:4173"
     depends_on:
       - backend
     restart: unless-stopped

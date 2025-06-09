@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
 )
@@ -26,9 +27,15 @@ func main() {
 	r := mux.NewRouter()
 	h.RegisterRoutes(r)
 
+	corsHandler := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Content-Type"}),
+	)(r)
+
 	srv := &http.Server{
 		Addr:    ":8080",
-		Handler: r,
+		Handler: corsHandler,
 	}
 
 	go func() {
