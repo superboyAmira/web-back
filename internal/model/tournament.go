@@ -19,11 +19,8 @@ const (
 	InProgress TournamentState = "in_progress"
 )
 
-func (t *TournamentState) ToString() string {
-	if t == nil {
-		return ""
-	}
-	return string(*t)
+func (t TournamentState) ToString() string {
+	return string(t)
 }
 
 /*

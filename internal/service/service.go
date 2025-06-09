@@ -6,7 +6,7 @@ type Repository interface {
 	GetAll() []model.Tournament
 	Save(model.Tournament) model.Tournament
 	Delete(id uint)
-	Archive(id uint)
+	ChangeState(id uint, state model.TournamentState)
 }
 
 type TournamentService struct {
@@ -29,6 +29,6 @@ func (s *TournamentService) Delete(id uint) {
 	s.repo.Delete(id)
 }
 
-func (s *TournamentService) Archive(id uint) {
-	s.repo.Archive(id)
+func (s *TournamentService) ChangeState(id uint, state model.TournamentState) {
+	s.repo.ChangeState(id, state)
 }

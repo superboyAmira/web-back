@@ -6,13 +6,6 @@ import (
 	"time"
 )
 
-type Repository interface {
-	GetAll() []model.Tournament
-	Save(model.Tournament) model.Tournament
-	Delete(id uint)
-	Archive(id uint)
-}
-
 type InMemoryRepo struct {
 	mu          sync.RWMutex
 	tournaments map[uint]model.Tournament
@@ -75,11 +68,11 @@ func (r *InMemoryRepo) Delete(id uint) {
 	delete(r.tournaments, id)
 }
 
-func (r *InMemoryRepo) Archive(id uint) {
+func (r *InMemoryRepo) ChangeState(id uint, state model.TournamentState) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	if t, ok := r.tournaments[id]; ok {
-		t.Status = model.Archive
+		t.Status = state
 		r.tournaments[id] = t
 	}
 }

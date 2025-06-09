@@ -25,7 +25,7 @@ func (h *Handler) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/api/tournaments", h.GetAll).Methods("GET")
 	r.HandleFunc("/api/tournaments", h.Create).Methods("POST")
 	r.HandleFunc("/api/tournaments/{id}", h.Delete).Methods("DELETE")
-	r.HandleFunc("/api/tournaments/{id}", h.Archive).Methods("PATCH")
+	r.HandleFunc("/api/tournaments/{id}", h.ChangeState).Methods("PATCH")
 }
 
 func (h *Handler) GetAll(w http.ResponseWriter, _ *http.Request) {
@@ -57,8 +57,14 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h *Handler) Archive(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ChangeState(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
-	h.svc.Archive(uint(id))
+	state := model.TournamentState(r.URL.Query().Get("state"))
+	if state != model.Active && state != model.Archive && state != model.InProgress {
+		h.logger.Error("invalid change payload")
+		http.Error(w, "invalid change payload", http.StatusBadRequest)
+		return
+	}
+	h.svc.ChangeState(uint(id), state)
 	w.WriteHeader(http.StatusNoContent)
 }
